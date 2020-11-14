@@ -1,12 +1,25 @@
 package pacote;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 class Payload implements Serializable {
     private String data;
-    private int numeroDoServidor = 1;
+    private int numeroDoServidor = 0;
+    private ArrayList<String> listaDeIps = new ArrayList<>();
 
     private boolean executando = false;
+
+    //mostrar Os Diferentes IPs associados
+    public ArrayList<String> getListaDeIps() {
+        return listaDeIps;
+    }
+
+    public void setListaDeIps(ArrayList<String> listaDeIps) {
+        this.listaDeIps = listaDeIps;
+    }
+
+
 
     //payload numeroDoServidor
     synchronized public void addNumeroDoServidor() {

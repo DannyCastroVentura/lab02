@@ -3,8 +3,10 @@ package pacote;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ServidorC extends Thread {
@@ -16,10 +18,13 @@ public class ServidorC extends Thread {
 
     ArrayList<String> lista = new ArrayList<>();
 
+    static ArrayList<String> listaDeIps = new ArrayList<>();
+
 
     public ServidorC(Socket socket) {
         this.socket = socket;
     }
+
 
     public void run() {
         try {
@@ -41,11 +46,12 @@ public class ServidorC extends Thread {
                 } else if (obj instanceof Payload) {
                     if(((Payload) obj).getData().contentEquals("MostraOMenu"))
                     {
-                        ((Payload) obj).setData("Menu: R-Registar\tC-Consultar\tQ-Terminar o Cliente\tT-Terminar Cliente e Servidor");
+                        ((Payload) obj).setData("Menu: R-Registar\tC-Consultar\tD-Eliminar\tL-Cada Servidor Listar o que tem\tQ-Terminar");
                         out.writeObject(obj);
                     }else{
                         String[] textoSeparado = ((Payload) obj).getData().split(" ", 3);
                         int ServidorEscolhido = 0;
+                        String ipEscolhido = "";
                         if(!textoSeparado[0].contentEquals("L")){
                             int valorDaChave = 0;
                             // Creating array of string length
@@ -62,6 +68,12 @@ public class ServidorC extends Thread {
 
                             System.out.println("Numero de servidores: " + objetoPayload.getNumeroDoServidor());
                             System.out.println("Servidor Escolhido: " + ServidorEscolhido);
+
+
+                            ipEscolhido = listaDeIps.get(ServidorEscolhido-1);
+
+                            System.out.println("Ip do servidor escolhido: "+ ipEscolhido);
+
                         }
 
 
@@ -88,9 +100,10 @@ public class ServidorC extends Thread {
 
                                 }else{
                                     int finalServidorEscolhido = ServidorEscolhido;
+                                    String finalIpEscolhido3 = ipEscolhido;
                                     Thread registar = new Thread(() -> {
                                         try {
-                                            Socket socket = new Socket("localhost", 4243 + finalServidorEscolhido);
+                                            Socket socket = new Socket(finalIpEscolhido3, 4243 + finalServidorEscolhido);
                                             ObjectOutputStream out1 = new ObjectOutputStream(socket.getOutputStream());
                                             ObjectInputStream in1 = new ObjectInputStream(socket.getInputStream());
                                             Payload payload = new Payload("R " + textoSeparado[1] + " " + textoSeparado[2]);
@@ -136,9 +149,10 @@ public class ServidorC extends Thread {
                                     }
                                 }else{
                                     int finalServidorEscolhido1 = ServidorEscolhido;
+                                    String finalIpEscolhido2 = ipEscolhido;
                                     Thread busca = new Thread(() -> {
                                         try {
-                                            Socket socket = new Socket("localhost", 4243 + finalServidorEscolhido1);
+                                            Socket socket = new Socket(finalIpEscolhido2, 4243 + finalServidorEscolhido1);
                                             ObjectOutputStream out1 = new ObjectOutputStream(socket.getOutputStream());
                                             ObjectInputStream in1 = new ObjectInputStream(socket.getInputStream());
                                             Payload payload = new Payload("C " + textoSeparado[1]);
@@ -187,9 +201,10 @@ public class ServidorC extends Thread {
 
                                 }else{
                                     int finalServidorEscolhido2 = ServidorEscolhido;
+                                    String finalIpEscolhido1 = ipEscolhido;
                                     Thread busca = new Thread(() -> {
                                         try {
-                                            Socket socket = new Socket("localhost", 4243 + finalServidorEscolhido2);
+                                            Socket socket = new Socket(finalIpEscolhido1, 4243 + finalServidorEscolhido2);
                                             ObjectOutputStream out1 = new ObjectOutputStream(socket.getOutputStream());
                                             ObjectInputStream in1 = new ObjectInputStream(socket.getInputStream());
                                             Payload payload = new Payload("D " + textoSeparado[1]);
@@ -232,9 +247,11 @@ public class ServidorC extends Thread {
                                 for (int i = 2; i < numeroServidores; i++)
                                 {
                                     int finalI = i;
+                                    ipEscolhido = listaDeIps.get(finalI-1);
+                                    String finalIpEscolhido = ipEscolhido;
                                     Thread busca = new Thread(() -> {
                                         try {
-                                            Socket socket = new Socket("localhost", 4243 + finalI);
+                                            Socket socket = new Socket(finalIpEscolhido, 4243 + finalI);
                                             ObjectOutputStream out1 = new ObjectOutputStream(socket.getOutputStream());
                                             ObjectInputStream in1 = new ObjectInputStream(socket.getInputStream());
                                             Payload payload = new Payload("L");
@@ -281,12 +298,15 @@ public class ServidorC extends Thread {
 
     public static void main(String[] args) {
 
+
         try {
             Thread busca = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        Socket socket = new Socket("127.0.0.1", 4243);
+
+                        Socket socket = new Socket("192.168.56.1", 4243);
+                        //Socket socket = new Socket("localhost", 4243);
                         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                         Payload payload = new Payload("numero");
@@ -294,6 +314,8 @@ public class ServidorC extends Thread {
                         String partilha = ((Payload) in.readObject()).getData();
                         System.out.println("[received] " + partilha);
                         objetoPayload.setNumeroDoServidor(Integer.parseInt(partilha));
+                        listaDeIps = ((Payload) in.readObject()).getListaDeIps();
+                        System.out.println("[received] " + listaDeIps);
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -301,7 +323,8 @@ public class ServidorC extends Thread {
             });
             busca.start();
             busca.join();
-            serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(PORT, 1, InetAddress.getLocalHost());
+            //serverSocket = new ServerSocket(PORT);
             System.out.println("[started]");
         } catch (IOException | InterruptedException ioe) {
             ioe.printStackTrace();

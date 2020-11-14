@@ -1,10 +1,14 @@
 package pacote;
 
+import javax.sound.sampled.Port;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class ServidorS extends Thread {
 
@@ -14,11 +18,14 @@ public class ServidorS extends Thread {
     private static ServerSocket serverSocket;
     private final Socket socket;
 
+
+    static ArrayList<String> listaDeIps = new ArrayList<>();
+
     public ServidorS(Socket socket) {
         this.socket = socket;
     }
 
-    public void adicionarServidor()
+    public static void adicionarServidor()
     {
         objetoPayload.addNumeroDoServidor();
     }
@@ -31,13 +38,19 @@ public class ServidorS extends Thread {
 
             Object obj = null;
             obj = in.readObject();
+            //se o servidor perguntar quantos servidores existem, esse numero total é retornado
             if(((Payload) obj).getData().contentEquals("numero"))
             {
                 Payload numeroDoServidor = new Payload(Integer.toString(objetoPayload.getNumeroDoServidor()));
                 out.writeObject(numeroDoServidor);
+                Payload ListaDeIps = new Payload();
+                ((Payload) ListaDeIps).setListaDeIps(listaDeIps);
+                out.writeObject(ListaDeIps);
             }else{
                 //chamar o metodo adicionar servidor
+                String novoIp = ((Payload) obj).getData();
                 adicionarServidor();
+                listaDeIps.add(novoIp);
                 Payload numeroDoServidor = new Payload(Integer.toString(objetoPayload.getNumeroDoServidor()));
                 out.writeObject(numeroDoServidor);
 
@@ -54,8 +67,14 @@ public class ServidorS extends Thread {
         }
     }
     public static void main(String[] args) {
+
         try {
-            serverSocket = new ServerSocket(PORT);
+
+            adicionarServidor();
+            InetAddress localhost = InetAddress.getLocalHost();
+            listaDeIps.add((localhost.getHostAddress()).trim());
+            serverSocket = new ServerSocket(PORT, 1, InetAddress.getLocalHost());
+            //serverSocket = new ServerSocket(PORT);
             System.out.println("[started]");
         } catch (IOException ioe) {
             ioe.printStackTrace();

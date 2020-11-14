@@ -5,6 +5,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -12,11 +14,14 @@ public class ServerMembro {
     private static ServerSocket serverSocket;
     public static void main(String[] args) {
         try {
-            Socket socket1 = new Socket("127.0.0.1", 4243);
+            Socket socket1 = new Socket("192.168.56.1", 4243);
+            //Socket socket1 = new Socket("localhost", 4243);
             ObjectOutputStream out = new ObjectOutputStream(socket1.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket1.getInputStream());
 
-            Payload payload = new Payload("");
+
+            InetAddress localhost = InetAddress.getLocalHost();
+            Payload payload = new Payload(localhost.getHostAddress().trim());
             out.writeObject(payload);
 
             System.out.println("Chegou aqui");
@@ -28,7 +33,8 @@ public class ServerMembro {
             ArrayList<String> lista = new ArrayList<>();
             socket1.close();
             try {
-                serverSocket = new ServerSocket(port);
+                //serverSocket = new ServerSocket(port);
+                serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost());
                 System.out.println("[started]");
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -55,7 +61,6 @@ public class ServerMembro {
                         String[] escolha = ((Payload) obj).getData().split(" ", 3);
                         switch (escolha[0]){
                             case "R":
-
                                 int verificarSeExiste = 0;
                                 for(String l: lista) {
                                     String [] arr = l.split(" ", 2);

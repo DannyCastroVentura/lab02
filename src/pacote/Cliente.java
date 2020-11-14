@@ -9,7 +9,8 @@ public class Cliente {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         try {
-            Socket socket = new Socket("127.0.0.1", 4242);
+            Socket socket = new Socket("192.168.56.1", 4242);
+            //Socket socket = new Socket("localhost", 4242);
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             Object ligacao = in.readObject();
