@@ -305,7 +305,7 @@ public class ServidorC extends Thread {
                 public void run() {
                     try {
 
-                        Socket socket = new Socket("192.168.56.1", 4243);
+                        Socket socket = new Socket("192.168.1.91", 4243);
                         //Socket socket = new Socket("localhost", 4243);
                         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

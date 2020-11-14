@@ -14,7 +14,7 @@ public class ServerMembro {
     private static ServerSocket serverSocket;
     public static void main(String[] args) {
         try {
-            Socket socket1 = new Socket("192.168.56.1", 4243);
+            Socket socket1 = new Socket("192.168.1.91", 4243);
             //Socket socket1 = new Socket("localhost", 4243);
             ObjectOutputStream out = new ObjectOutputStream(socket1.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket1.getInputStream());
