@@ -13,7 +13,6 @@ import java.util.Enumeration;
 
 public class ServidorS extends Thread {
 
-    //problema é que ele fica a mexer no mesmo em vez de mexer na variavel da outra classe
     private static Payload objetoPayload = new Payload();
     private final static int PORT = 4243;
     private static ServerSocket serverSocket;

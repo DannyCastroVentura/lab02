@@ -51,10 +51,17 @@ public class ServidorC extends Thread {
                         ((Payload) obj).setData("Menu: R-Registar\tC-Consultar\tD-Eliminar\tL-Cada Servidor Listar o que tem\tQ-Terminar");
                         out.writeObject(obj);
                     }else{
-                        String[] textoSeparado = ((Payload) obj).getData().split(" ", 3);
+                        String exempolo = ((Payload) obj).getData();
+                        int erro = 0;
+                        if(exempolo.length() == 1)
+                        {
+                            erro = 1;
+                        }
+
+                        String[] textoSeparado = exempolo.split(" ", 3);
                         int ServidorEscolhido = 0;
                         String ipEscolhido = "";
-                        if(!textoSeparado[0].contentEquals("L")){
+                        if(!textoSeparado[0].contentEquals("L") && erro == 0){
                             int valorDaChave = 0;
                             // Creating array of string length
                             char[] ch = new char[textoSeparado[1].length()];
@@ -83,6 +90,13 @@ public class ServidorC extends Thread {
 
                         switch (textoSeparado[0]){
                             case "R":
+                                if(erro == 1)
+                                {
+                                    System.out.println("Ocorreu um erro.");
+                                    ((Payload) obj).setData("Ocorreu um erro.");
+                                    out.writeObject(obj);
+                                    break;
+                                }
                                 if(ServidorEscolhido==1)
                                 {
                                     int verificarSeExiste = 0;
@@ -134,6 +148,13 @@ public class ServidorC extends Thread {
 
                                 break;
                             case "C":
+                                if(erro == 1)
+                                {
+                                    System.out.println("Ocorreu um erro.");
+                                    ((Payload) obj).setData("Ocorreu um erro.");
+                                    out.writeObject(obj);
+                                    break;
+                                }
                                 if(ServidorEscolhido == 1)
                                 {
                                     int verificarSeExiste = 0;
@@ -182,6 +203,13 @@ public class ServidorC extends Thread {
 
                                 break;
                             case "D":
+                                if(erro == 1)
+                                {
+                                    System.out.println("Ocorreu um erro.");
+                                    ((Payload) obj).setData("Ocorreu um erro.");
+                                    out.writeObject(obj);
+                                    break;
+                                }
                                 if(ServidorEscolhido == 1)
                                 {
                                     int verificarSeExiste = 0, posicao = 0;
