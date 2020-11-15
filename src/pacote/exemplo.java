@@ -17,7 +17,7 @@ public class exemplo {
 
              for (NetworkInterface netint : Collections.list(nets))
              {
-                 if(netint.getName().contentEquals("eth0"))
+                 if(netint.getName().contentEquals("eth2"))
                  {
                      Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
                      for (InetAddress inetAddress : Collections.list(inetAddresses)) {

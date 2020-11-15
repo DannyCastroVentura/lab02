@@ -52,7 +52,8 @@ public class ServerMembro {
             socket1.close();
             try {
                 //serverSocket = new ServerSocket(port);
-
+                nets = null;
+                nets = NetworkInterface.getNetworkInterfaces();
                 for (NetworkInterface netint : Collections.list(nets))
                 {
                     if(netint.getName().contentEquals("eth0"))
@@ -67,14 +68,13 @@ public class ServerMembro {
                     }
                 }
                 System.out.println("[started]");
+
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
 
-
-            while (!serverSocket.isClosed()) {
+            while (true) {
                 try {
-
                     Socket socket = serverSocket.accept();
                     out = new ObjectOutputStream(socket.getOutputStream());
                     in = new ObjectInputStream(socket.getInputStream());
