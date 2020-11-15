@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ServidorC extends Thread {
@@ -299,7 +298,7 @@ public class ServidorC extends Thread {
             Thread busca = new Thread(() -> {
                 try {
 
-                    Socket socket = new Socket("192.168.1.91", 4243);
+                    Socket socket = new Socket("192.168.1.104", 4243);
                     //Socket socket = new Socket("localhost", 4243);
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

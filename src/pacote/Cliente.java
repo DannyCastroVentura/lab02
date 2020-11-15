@@ -5,14 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
-import pacote.Payload;
 
 
 public class Cliente {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         try {
-            Socket socket = new Socket("192.168.1.91", 4242);
+            Socket socket = new Socket("192.168.1.104", 4242);
             //Socket socket = new Socket("localhost", 4242);
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

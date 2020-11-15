@@ -2,20 +2,17 @@ package pacote;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
-import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.Scanner;
 
 
 public class ServerMembro {
     private static ServerSocket serverSocket;
     public static void main(String[] args) {
         try {
-            Socket socket1 = new Socket("192.168.1.91", 4243);
+            Socket socket1 = new Socket("192.168.1.104", 4243);
             //Socket socket1 = new Socket("localhost", 4243);
             ObjectOutputStream out = new ObjectOutputStream(socket1.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket1.getInputStream());
