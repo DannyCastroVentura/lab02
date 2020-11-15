@@ -70,9 +70,6 @@ public class ServidorS extends Thread {
         try {
 
             adicionarServidor();
-            InetAddress localhost = InetAddress.getLocalHost();
-            listaDeIps.add((localhost.getHostAddress()).trim());
-            System.out.println(InetAddress.getLocalHost());
 
             Enumeration<NetworkInterface> nets = null;
             nets = NetworkInterface.getNetworkInterfaces();
@@ -84,7 +81,10 @@ public class ServidorS extends Thread {
                     Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
                     for (InetAddress inetAddress : Collections.list(inetAddresses)) {
                         if(inetAddress.toString().contains("/192")){
+
+                            listaDeIps.add(inetAddress.toString());
                             serverSocket = new ServerSocket(PORT, 1, inetAddress);
+
                         }
 
                     }
