@@ -42,12 +42,11 @@ public class ServerMembro {
 
 
 
-            System.out.println("Chegou aqui");
             int numeroDoServ = Integer.parseInt(((Payload) in.readObject()).getData());
 
             System.out.println("O numero do servidor é " + numeroDoServ);
-
             final int port = (4243 + numeroDoServ);
+            System.out.println("A porta do servidor é " + port);
             ArrayList<String> lista = new ArrayList<>();
             socket1.close();
             try {
@@ -61,7 +60,10 @@ public class ServerMembro {
                         Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
                         for (InetAddress inetAddress : Collections.list(inetAddresses)) {
                             if(inetAddress.toString().contains("/192")){
+
                                 serverSocket = new ServerSocket(port, 1, inetAddress);
+
+                                System.out.println("O IP do servidor é " + inetAddress);
                             }
 
                         }

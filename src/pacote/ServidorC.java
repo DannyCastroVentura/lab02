@@ -73,7 +73,7 @@ public class ServidorC extends Thread {
 
 
                             ipEscolhido = listaDeIps.get(ServidorEscolhido-1);
-
+                            ipEscolhido = ipEscolhido.replace("/", "");
                             System.out.println("Ip do servidor escolhido: "+ ipEscolhido);
 
                         }
@@ -120,7 +120,7 @@ public class ServidorC extends Thread {
                                     registar.start();
                                     registar.join();
                                 }
-                                System.out.println(objetoPayload.getData());
+                                System.out.println("Conteudo do objetoPayload.getData(): " + objetoPayload.getData());
                                 if(!objetoPayload.getData().contentEquals("Chave existente."))
                                 {
                                     System.out.println("Um cliente registou.");
@@ -250,6 +250,7 @@ public class ServidorC extends Thread {
                                 {
                                     int finalI = i;
                                     ipEscolhido = listaDeIps.get(finalI-1);
+                                    ipEscolhido = ipEscolhido.replace("/", "");
                                     String finalIpEscolhido = ipEscolhido;
                                     Thread busca = new Thread(() -> {
                                         try {
@@ -265,7 +266,6 @@ public class ServidorC extends Thread {
                                     busca.start();
                                     busca.join();
                                 }
-
                                 break;
 
                             default:
@@ -273,17 +273,11 @@ public class ServidorC extends Thread {
                                 ((Payload) obj).setData("Comando desconhecido!");
                                 out.writeObject(obj);
                                 break;
-
                         }
                     }
-
-
                 } else {
                     System.out.println("[payload] Unexpected data.");
                 }
-
-
-
             }
             socket.close();
             out.close();
@@ -335,7 +329,6 @@ public class ServidorC extends Thread {
                     }
                 }
             }
-            //serverSocket = new ServerSocket(PORT);
             System.out.println("[started]");
         } catch (IOException | InterruptedException ioe) {
             ioe.printStackTrace();
