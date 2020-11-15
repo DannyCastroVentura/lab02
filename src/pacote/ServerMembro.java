@@ -21,9 +21,26 @@ public class ServerMembro {
             ObjectInputStream in = new ObjectInputStream(socket1.getInputStream());
 
 
-            InetAddress localhost = InetAddress.getLocalHost();
-            Payload payload = new Payload(localhost.getHostAddress().trim());
-            out.writeObject(payload);
+            Enumeration<NetworkInterface> nets = null;
+            nets = NetworkInterface.getNetworkInterfaces();
+
+            Payload payload;
+            for (NetworkInterface netint : Collections.list(nets))
+            {
+                if(netint.getName().contentEquals("eth0"))
+                {
+                    Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                        if(inetAddress.toString().contains("/192")){
+                            payload = new Payload(inetAddress.toString());
+                            out.writeObject(payload);
+                        }
+
+                    }
+                }
+            }
+
+
 
             System.out.println("Chegou aqui");
             int numeroDoServ = Integer.parseInt(((Payload) in.readObject()).getData());
@@ -35,8 +52,6 @@ public class ServerMembro {
             socket1.close();
             try {
                 //serverSocket = new ServerSocket(port);
-                Enumeration<NetworkInterface> nets = null;
-                nets = NetworkInterface.getNetworkInterfaces();
 
                 for (NetworkInterface netint : Collections.list(nets))
                 {
