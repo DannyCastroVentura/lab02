@@ -1,13 +1,11 @@
 package pacote;
 
-import javax.sound.sampled.Port;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ServidorS extends Thread {
@@ -71,6 +69,7 @@ public class ServidorS extends Thread {
             adicionarServidor();
             InetAddress localhost = InetAddress.getLocalHost();
             listaDeIps.add((localhost.getHostAddress()).trim());
+            System.out.println(InetAddress.getLocalHost());
             serverSocket = new ServerSocket(PORT, 1, InetAddress.getLocalHost());
             //serverSocket = new ServerSocket(PORT);
             System.out.println("[started]");
