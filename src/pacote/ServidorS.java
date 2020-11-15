@@ -36,7 +36,7 @@ public class ServidorS extends Thread {
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-            Object obj = null;
+            Object obj;
             obj = in.readObject();
             //se o servidor perguntar quantos servidores existem, esse numero total é retornado
             if(((Payload) obj).getData().contentEquals("numero"))
@@ -44,7 +44,7 @@ public class ServidorS extends Thread {
                 Payload numeroDoServidor = new Payload(Integer.toString(objetoPayload.getNumeroDoServidor()));
                 out.writeObject(numeroDoServidor);
                 Payload ListaDeIps = new Payload();
-                ((Payload) ListaDeIps).setListaDeIps(listaDeIps);
+                ListaDeIps.setListaDeIps(listaDeIps);
                 out.writeObject(ListaDeIps);
             }else{
                 //chamar o metodo adicionar servidor
@@ -60,9 +60,7 @@ public class ServidorS extends Thread {
             }
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

@@ -23,7 +23,7 @@ class Payload implements Serializable {
 
     //payload numeroDoServidor
     synchronized public void addNumeroDoServidor() {
-        while(executando == true)
+        while(executando)
         {
             try {
                 wait();
@@ -38,7 +38,7 @@ class Payload implements Serializable {
 
     }
     synchronized public void setNumeroDoServidor(int numero) {
-        while(executando == true)
+        while(executando)
         {
             try {
                 wait();

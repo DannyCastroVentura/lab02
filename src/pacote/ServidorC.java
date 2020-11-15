@@ -30,7 +30,7 @@ public class ServidorC extends Thread {
         try {
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            Object obj = null;
+            Object obj;
             Object ligacao = "Ligação estabelecida!";
 
             out.writeObject(ligacao);
@@ -39,7 +39,7 @@ public class ServidorC extends Thread {
                 obj = in.readObject();
 
                 if (obj instanceof String) {
-                    if (((String) obj).equals("Q")) {
+                    if (obj.equals("Q")) {
                         break;
                     }
 
@@ -287,11 +287,7 @@ public class ServidorC extends Thread {
             out.close();
             in.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -300,25 +296,22 @@ public class ServidorC extends Thread {
 
 
         try {
-            Thread busca = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
+            Thread busca = new Thread(() -> {
+                try {
 
-                        Socket socket = new Socket("192.168.1.91", 4243);
-                        //Socket socket = new Socket("localhost", 4243);
-                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                        Payload payload = new Payload("numero");
-                        out.writeObject(payload);
-                        String partilha = ((Payload) in.readObject()).getData();
-                        System.out.println("[received] " + partilha);
-                        objetoPayload.setNumeroDoServidor(Integer.parseInt(partilha));
-                        listaDeIps = ((Payload) in.readObject()).getListaDeIps();
-                        System.out.println("[received] " + listaDeIps);
-                    } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    Socket socket = new Socket("192.168.1.91", 4243);
+                    //Socket socket = new Socket("localhost", 4243);
+                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                    Payload payload = new Payload("numero");
+                    out.writeObject(payload);
+                    String partilha = ((Payload) in.readObject()).getData();
+                    System.out.println("[received] " + partilha);
+                    objetoPayload.setNumeroDoServidor(Integer.parseInt(partilha));
+                    listaDeIps = ((Payload) in.readObject()).getListaDeIps();
+                    System.out.println("[received] " + listaDeIps);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             });
             busca.start();
