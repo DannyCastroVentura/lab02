@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 public class ServidorC extends Thread {
 
@@ -298,7 +301,7 @@ public class ServidorC extends Thread {
             Thread busca = new Thread(() -> {
                 try {
 
-                    Socket socket = new Socket("192.168.1.104", 4243);
+                    Socket socket = new Socket("192.168.1.106", 4243);
                     //Socket socket = new Socket("localhost", 4243);
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -315,7 +318,23 @@ public class ServidorC extends Thread {
             });
             busca.start();
             busca.join();
-            serverSocket = new ServerSocket(PORT, 1, InetAddress.getLocalHost());
+
+            Enumeration<NetworkInterface> nets = null;
+            nets = NetworkInterface.getNetworkInterfaces();
+
+            for (NetworkInterface netint : Collections.list(nets))
+            {
+                if(netint.getName().contentEquals("eth0"))
+                {
+                    Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                        if(inetAddress.toString().contains("/192")){
+                            serverSocket = new ServerSocket(PORT, 1, inetAddress);
+                        }
+
+                    }
+                }
+            }
             //serverSocket = new ServerSocket(PORT);
             System.out.println("[started]");
         } catch (IOException | InterruptedException ioe) {

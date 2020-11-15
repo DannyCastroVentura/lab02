@@ -3,16 +3,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 
 public class ServerMembro {
     private static ServerSocket serverSocket;
     public static void main(String[] args) {
         try {
-            Socket socket1 = new Socket("192.168.1.78", 4243);
+            Socket socket1 = new Socket("192.168.1.106", 4243);
             //Socket socket1 = new Socket("localhost", 4243);
             ObjectOutputStream out = new ObjectOutputStream(socket1.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket1.getInputStream());
@@ -32,7 +35,22 @@ public class ServerMembro {
             socket1.close();
             try {
                 //serverSocket = new ServerSocket(port);
-                serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost());
+                Enumeration<NetworkInterface> nets = null;
+                nets = NetworkInterface.getNetworkInterfaces();
+
+                for (NetworkInterface netint : Collections.list(nets))
+                {
+                    if(netint.getName().contentEquals("eth0"))
+                    {
+                        Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                        for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                            if(inetAddress.toString().contains("/192")){
+                                serverSocket = new ServerSocket(port, 1, inetAddress);
+                            }
+
+                        }
+                    }
+                }
                 System.out.println("[started]");
             } catch (IOException ioe) {
                 ioe.printStackTrace();

@@ -9,19 +9,29 @@ import static java.lang.System.out;
 
 public class exemplo {
 
-    public static void main(String args[]) throws SocketException {
-        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-        for (NetworkInterface netint : Collections.list(nets))
-            displayInterfaceInformation(netint);
+    public static void main(String args[]) {
+
+        try {
+            Enumeration<NetworkInterface> nets = null;
+            nets = NetworkInterface.getNetworkInterfaces();
+
+             for (NetworkInterface netint : Collections.list(nets))
+             {
+                 if(netint.getName().contentEquals("eth2"))
+                 {
+                     Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                     for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                         if(inetAddress.toString().contains("/192")){
+                             out.printf("InetAddress: %s\n", inetAddress);
+                         }
+
+                     }
+                 }
+             }
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
-    static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
-        out.printf("Display name: %s\n", netint.getDisplayName());
-        out.printf("Name: %s\n", netint.getName());
-        Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-        for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-            out.printf("InetAddress: %s\n", inetAddress);
-        }
-        out.printf("\n");
-    }
 }
